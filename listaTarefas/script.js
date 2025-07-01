@@ -1,24 +1,70 @@
-//criando uma funcao para realizar a ação de add itens na lista de tarefas
+let tarefas = [];
 
-function adicionarTarefa (){
-    //mensagem exibida após adicionarmos uma tarefa
-     const visualizarTarefa = "Tarefa Adicionada com Sucesso!";
-    
-    //criando uma varivavel para alocar o valor do ID add tarefa (INPUT)
-    let addTarefa = document.getElementById('addTarefa');
-    //Criando uma variavel para alocar o valor que é digitado sobre nosso INPUT
-    let tarefa = addTarefa.value;
-    //Aqui chamamos nosso P que esta sem valor, e adicionando a mensagem de tarefa add com sucesso
-    document.getElementById('visualizarTarefa').textContent = visualizarTarefa;
-    // Criando uma varivel para acessar o UL do HTML através do ID
-    let listaTarefa = document.getElementById('listaTarefas');
-    //Criando uma nova variavel, essa variavel ela acessa nosso documento HTMl e dentro do mesmo cria um elemento LI
-    let novaTarefa = document.createElement('li');
-    //Aqui estamos alocando o valor do LI dentro da variavel TAREFA, dentro dessa variavel, esta alocado o input
-    novaTarefa.textContent = tarefa
-    //Aqui estamos chamando a variavel que contém UL, falando que atraves do append.Child podemos criar LI dentro da UL
-    listaTarefa.appendChild(novaTarefa)
+function adicionarTarefa() {
+  const addTarefa = document.getElementById("addTarefa");
+  const visualizarTarefa = document.getElementById("visualizarTarefa");
 
-    //Deixando o input sem valor, após adicionarmos uma tarefa
-    addTarefa.value = " "
+  const valorTarefa = addTarefa.value.trim();
+
+  if (valorTarefa === "") {
+    visualizarTarefa.textContent = "Sem sucesso ao tentar entrar";
+  } else {
+    visualizarTarefa.textContent = "Tarefa adicionada com sucesso!";
+    tarefas.push(valorTarefa);
+    renderizarTarefas();
+  }
+
+  addTarefa.value = "";
+}
+
+function renderizarTarefas() {
+  const listaTarefas = document.getElementById("listaTarefas");
+  listaTarefas.innerHTML = "";
+
+  for (let i = 0; i < tarefas.length; i++) {
+    let criacaoLi = document.createElement("li");
+    criacaoLi.textContent = tarefas[i];
+
+    // Botão Remover
+    let botaoRemover = document.createElement("button");
+    botaoRemover.className = "remover";
+    botaoRemover.textContent = "Remover tarefa";
+    botaoRemover.onclick = () => removerTarefa(i);
+
+    // Botão Editar
+    let botaoEditar = document.createElement("button");
+    botaoEditar.className = "editar";
+    botaoEditar.textContent = "Editar";
+    botaoEditar.onclick = () => editarTarefa(i);
+
+    // Adiciona os botões dentro da <li>
+    criacaoLi.appendChild(botaoRemover);
+    criacaoLi.appendChild(botaoEditar);
+
+    // Adiciona <li> dentro da <ul>
+    listaTarefas.appendChild(criacaoLi);
+  }
+}
+
+function removerTarefa(i) {
+  tarefas.splice(i, 1);
+  renderizarTarefas();
+}
+
+function editarTarefa(i) {
+  let tarefaEditada = prompt("Edite a tarefa:", tarefas[i]);
+  if (tarefaEditada && tarefaEditada.trim() !== "") {
+    tarefas[i] = tarefaEditada.trim();
+    renderizarTarefas();
+  }
+}
+
+function limparLista() {
+  tarefas.length = 0;
+  renderizarTarefas();
+
+  const mensagem = document.getElementById("mensagem");
+  if (mensagem) {
+    mensagem.textContent = "Lista de tarefas limpa com sucesso!";
+  }
 }
